@@ -1,5 +1,5 @@
 import {initializeApp} from "https://www.gstatic.com/firebasejs/9.18.0/firebase-app.js";
-import {getDatabase, ref, push} from "https://www.gstatic.com/firebasejs/9.18.0/firebase-database.js";
+import {getDatabase, ref, push, onValue} from "https://www.gstatic.com/firebasejs/9.18.0/firebase-database.js";
 
 const appSettings = {
     projectId: "playground-3dc69",
@@ -8,13 +8,38 @@ const appSettings = {
 
 const app = initializeApp(appSettings);
 const database = getDatabase(app);
-const moviesInDB = ref(database, "shoppingList");
+const itemsInDB = ref(database, "shoppingList");
 
 const addButtonEl = document.getElementById('add-button');
 const inputFieldEl = document.getElementById('input-field');
 const shoppingList = document.getElementById('shopping-list');
 
-const createListElement = function (itemText) {
+const createShoppingListElements = function (itemList) {
+    const shoppingListElements = [];
+    itemList.forEach(element => {
+        const shoppingListItemElement = createShoppingListItemElement(element);
+        shoppingListElements.push(shoppingListItemElement);
+    });
+    return shoppingListElements;
+}
+
+const clearShoppingListItemsFromUI = function () {
+    shoppingList.innerHTML = '';
+}
+
+const renderShoppingListElements = function (shoppingListElements) {
+    clearShoppingListItemsFromUI();
+    shoppingListElements.forEach(listItem => {
+        shoppingList.appendChild(listItem);
+    });
+}
+
+onValue(itemsInDB, (snapshot) => {
+    const shoppingListElements = createShoppingListElements(Object.values(snapshot.val()));
+    renderShoppingListElements(shoppingListElements);
+});
+
+const createShoppingListItemElement = function (itemText) {
     const listItem = document.createElement('li');
     listItem.innerHTML = itemText;
     return listItem;
@@ -29,10 +54,6 @@ addButtonEl.addEventListener('click', function (event) {
 
     // Push item to database
     const inputValue = inputFieldEl.value;
-    push(moviesInDB, inputValue);
-
-    // Update interface with the new item
-    const listItem = createListElement(inputValue);
-    shoppingList.appendChild(listItem);
+    push(itemsInDB, inputValue);
     clearInputField();
 });
