@@ -69,3 +69,21 @@ form {
 .card img {
     width: 13rem;
 }
+
+ul {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    gap: 0.5rem;
+    padding: 0;
+    margin: 0;
+}
+
+ul li {
+    flex-grow: 1;
+    text-align: center;
+    background-color: #e1e1e1;
+    padding: 0.5rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+}

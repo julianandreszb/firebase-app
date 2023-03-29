@@ -8,7 +8,7 @@ const appSettings = {
 
 const app = initializeApp(appSettings);
 const database = getDatabase(app);
-const itemsInDB = ref(database, "shoppingList");
+const shoppingListItemsInDB = ref(database, "shoppingList");
 
 const addButtonEl = document.getElementById('add-button');
 const inputFieldEl = document.getElementById('input-field');
@@ -23,18 +23,18 @@ const createShoppingListElements = function (itemList) {
     return shoppingListElements;
 }
 
-const clearShoppingListItemsFromUI = function () {
+const clearShoppingListEl = function () {
     shoppingList.innerHTML = '';
 }
 
 const renderShoppingListElements = function (shoppingListElements) {
-    clearShoppingListItemsFromUI();
+    clearShoppingListEl();
     shoppingListElements.forEach(listItem => {
         shoppingList.appendChild(listItem);
     });
 }
 
-onValue(itemsInDB, (snapshot) => {
+onValue(shoppingListItemsInDB, (snapshot) => {
     const shoppingListElements = createShoppingListElements(Object.values(snapshot.val()));
     renderShoppingListElements(shoppingListElements);
 });
@@ -54,6 +54,6 @@ addButtonEl.addEventListener('click', function (event) {
 
     // Push item to database
     const inputValue = inputFieldEl.value;
-    push(itemsInDB, inputValue);
+    push(shoppingListItemsInDB, inputValue);
     clearInputField();
 });
