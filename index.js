@@ -14,10 +14,10 @@ const addButtonEl = document.getElementById('add-button');
 const inputFieldEl = document.getElementById('input-field');
 const shoppingList = document.getElementById('shopping-list');
 
-const createShoppingListElements = function (itemList) {
+const createShoppingListElements = function (shoppingListEntries) {
     const shoppingListElements = [];
-    itemList.forEach(element => {
-        const shoppingListItemElement = createShoppingListItemElement(element);
+    shoppingListEntries.forEach(itemListEntry => {
+        const shoppingListItemElement = createShoppingListItemElement(itemListEntry);
         shoppingListElements.push(shoppingListItemElement);
     });
     return shoppingListElements;
@@ -35,13 +35,17 @@ const renderShoppingListElements = function (shoppingListElements) {
 }
 
 onValue(shoppingListItemsInDB, (snapshot) => {
-    const shoppingListElements = createShoppingListElements(Object.values(snapshot.val()));
+    console.log(Object.entries(snapshot.val()));
+    const shoppingListElements = createShoppingListElements(Object.entries(snapshot.val()));
     renderShoppingListElements(shoppingListElements);
 });
 
-const createShoppingListItemElement = function (itemText) {
+const createShoppingListItemElement = function (itemListEntry) {
     const listItem = document.createElement('li');
-    listItem.innerHTML = itemText;
+    const itemId = itemListEntry[0];
+    const itemName = itemListEntry[1];
+    listItem.setAttribute('id', itemId);
+    listItem.innerHTML = itemName;
     return listItem;
 }
 
