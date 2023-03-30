@@ -86,4 +86,9 @@ ul li {
     padding: 0.5rem;
     border-radius: 8px;
     font-size: 1.1rem;
+    cursor: pointer;
+}
+
+ul li::selection {
+    background: transparent;
 }

@@ -1,5 +1,5 @@
 import {initializeApp} from "https://www.gstatic.com/firebasejs/9.18.0/firebase-app.js";
-import {getDatabase, ref, push, onValue} from "https://www.gstatic.com/firebasejs/9.18.0/firebase-database.js";
+import {getDatabase, ref, push, onValue, remove} from "https://www.gstatic.com/firebasejs/9.18.0/firebase-database.js";
 
 const appSettings = {
     projectId: "playground-3dc69",
@@ -34,9 +34,23 @@ const renderShoppingListElements = function (shoppingListElements) {
     });
 }
 
+function removeShoppingListItemFromDB(listItemId) {
+    const listItemRefDB = ref(database, `shoppingList/${listItemId}`)
+    remove(listItemRefDB);
+}
+
+const addDoubleClickEventHandlerToShoppingListElements = function (shoppingListElements) {
+    shoppingListElements.forEach(listItem => {
+        listItem.addEventListener('dblclick', function (event){
+            const listItemId = listItem.getAttribute('id');
+            removeShoppingListItemFromDB(listItemId);
+        });
+    });
+}
+
 onValue(shoppingListItemsInDB, (snapshot) => {
-    console.log(Object.entries(snapshot.val()));
     const shoppingListElements = createShoppingListElements(Object.entries(snapshot.val()));
+    addDoubleClickEventHandlerToShoppingListElements(shoppingListElements);
     renderShoppingListElements(shoppingListElements);
 });
 
