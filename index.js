@@ -41,7 +41,7 @@ function removeShoppingListItemFromDB(listItemId) {
 
 const addDoubleClickEventHandlerToShoppingListElements = function (shoppingListElements) {
     shoppingListElements.forEach(listItem => {
-        listItem.addEventListener('dblclick', function (event){
+        listItem.addEventListener('dblclick', function (){
             const listItemId = listItem.getAttribute('id');
             removeShoppingListItemFromDB(listItemId);
         });
@@ -49,9 +49,13 @@ const addDoubleClickEventHandlerToShoppingListElements = function (shoppingListE
 }
 
 onValue(shoppingListItemsInDB, (snapshot) => {
-    const shoppingListElements = createShoppingListElements(Object.entries(snapshot.val()));
-    addDoubleClickEventHandlerToShoppingListElements(shoppingListElements);
-    renderShoppingListElements(shoppingListElements);
+    if (snapshot.exists()) {
+        const shoppingListElements = createShoppingListElements(Object.entries(snapshot.val()));
+        addDoubleClickEventHandlerToShoppingListElements(shoppingListElements);
+        renderShoppingListElements(shoppingListElements);
+    } else {
+        shoppingList.innerHTML = "No items here... yet";
+    }
 });
 
 const createShoppingListItemElement = function (itemListEntry) {
@@ -64,7 +68,7 @@ const createShoppingListItemElement = function (itemListEntry) {
 }
 
 const clearInputField = function () {
-    inputFieldEl.text = '';
+    inputFieldEl.value = '';
 }
 
 addButtonEl.addEventListener('click', function (event) {
